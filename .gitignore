@@ -1,2 +1,10 @@
-
+vendor/
 .env
+.env.*
+!.env.example
+composer.lock
+storage/logs/*.log
+coverage/
+.idea/
+.vscode/
+.DS_Store
