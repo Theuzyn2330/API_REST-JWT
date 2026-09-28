@@ -24,15 +24,18 @@ $request = (object) [
 
 
 http_response_code(200);
-[$routeStatus, $routeHandler, $routeVariables] = $dispatcher->dispatch($method, $path);
+$routeResult = $dispatcher->dispatch($method, $path);
+$routeStatus = $routeResult[0];
 if ($routeStatus === FastRoute\Dispatcher::NOT_FOUND) {
 	http_response_code(404);
 	$response = ['error' => 'Not Found'];
 } elseif ($routeStatus === FastRoute\Dispatcher::METHOD_NOT_ALLOWED) {
 	http_response_code(405);
-	header('Allow: ' . implode(', ', $routeHandler));
+	header('Allow: ' . implode(', ', $routeResult[1]));
 	$response = ['error' => 'Method Not Allowed'];
 } else {
+	$routeHandler = $routeResult[1];
+	$routeVariables = $routeResult[2];
 	$response = $routeHandler($routeVariables, $request);
 }
 

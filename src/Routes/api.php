@@ -2,6 +2,7 @@
 
 use App\Controllers\Api\AuthController;
 use App\Controllers\Api\CategoryController;
+use App\Controllers\Api\ProductController;
 use App\Controllers\Api\UserController;
 use App\Middleware\JwtMiddleware;
 
@@ -24,4 +25,9 @@ return [
     ['POST', '/api/categories', static fn (array $vars, object $request): array => $authenticated($request, static fn (): array => (new CategoryController())->create())],
     ['PUT', '/api/categories/{id:\\d+}', static fn (array $vars, object $request): array => $authenticated($request, static fn (): array => (new CategoryController())->update($vars['id']))],
     ['DELETE', '/api/categories/{id:\\d+}', static fn (array $vars, object $request): array => $authenticated($request, static fn (): array => (new CategoryController())->delete($vars['id']))],
+    ['GET', '/api/products', static fn (array $vars, object $request): array => (new ProductController())->index()],
+    ['GET', '/api/products/{id:\\d+}', static fn (array $vars, object $request): array => (new ProductController())->show($vars['id'])],
+    ['POST', '/api/products', static fn (array $vars, object $request): array => $authenticated($request, static fn (): array => (new ProductController())->create())],
+    ['PUT', '/api/products/{id:\\d+}', static fn (array $vars, object $request): array => $authenticated($request, static fn (): array => (new ProductController())->update($vars['id']))],
+    ['DELETE', '/api/products/{id:\\d+}', static fn (array $vars, object $request): array => $authenticated($request, static fn (): array => (new ProductController())->delete($vars['id']))],
 ];
