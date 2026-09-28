@@ -26,7 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'password' => $password,
         ]);
         $data = $apiResponse['data'];
-        if ($apiResponse['status'] === 200 && is_string($data['access_token'] ?? null)) {
+        $role = is_string($data['user']['role'] ?? null) ? $data['user']['role'] : null;
+        if ($apiResponse['status'] === 200 && is_string($data['access_token'] ?? null) && in_array($role, ['admin', 'manager'], true)) {
             session_regenerate_id(true);
             $_SESSION['access_token'] = $data['access_token'];
             $_SESSION['token_expires_at'] = time() + max(1, (int) ($data['expires_in'] ?? 3600));
@@ -40,10 +41,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        $loginError = in_array($apiResponse['status'], [401, 422], true)
-            ? 'E-mail ou senha inválidos.'
-            : 'Não foi possível autenticar agora. Tente novamente mais tarde.';
-        http_response_code($apiResponse['status'] === 401 ? 401 : 503);
+        $forbidden = $apiResponse['status'] === 403
+            || ($apiResponse['status'] === 200 && !in_array($role, ['admin', 'manager'], true));
+        $loginError = $forbidden
+            ? 'Sua conta não tem permissão para acessar o painel.'
+            : (in_array($apiResponse['status'], [401, 422], true)
+                ? 'E-mail ou senha inválidos.'
+                : 'Não foi possível autenticar agora. Tente novamente mais tarde.');
+        http_response_code($forbidden ? 403 : ($apiResponse['status'] === 401 ? 401 : 503));
     }
 }
 ?>

@@ -39,7 +39,8 @@ class User extends AbstractModel
 	public function findById(int $id): ?array
 	{
 		$statement = $this->connection->prepare(
-			'SELECT id, name, email, created_at, updated_at FROM users WHERE id = :id LIMIT 1'
+			'SELECT users.id, users.name, users.email, roles.code AS role, users.created_at, users.updated_at '
+			. 'FROM users INNER JOIN roles ON roles.id = users.role_id WHERE users.id = :id LIMIT 1'
 		);
 		$statement->execute(['id' => $id]);
 		$user = $statement->fetch();
@@ -50,7 +51,8 @@ class User extends AbstractModel
 	public function findByEmail(string $email): ?array
 	{
 		$statement = $this->connection->prepare(
-			'SELECT id, name, email, password, created_at, updated_at FROM users WHERE email = :email LIMIT 1'
+			'SELECT users.id, users.name, users.email, users.password, roles.code AS role, users.created_at, users.updated_at '
+			. 'FROM users INNER JOIN roles ON roles.id = users.role_id WHERE users.email = :email LIMIT 1'
 		);
 		$statement->execute(['email' => $email]);
 		$user = $statement->fetch();

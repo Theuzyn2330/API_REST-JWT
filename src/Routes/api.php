@@ -8,9 +8,16 @@ use App\Controllers\Api\PriceController;
 use App\Controllers\Api\SourceController;
 use App\Controllers\Api\UserController;
 use App\Middleware\JwtMiddleware;
+use App\Middleware\RoleMiddleware;
 
-$authenticated = static function (object $request, callable $handler): array {
-    return (new JwtMiddleware())->handle($request, $handler);
+$authenticated = static function (object $request, callable $handler, array $roles = ['admin', 'manager']): array {
+    return (new JwtMiddleware())->handle(
+        $request,
+        static fn (object $authenticatedRequest): array => (new RoleMiddleware($roles))->handle(
+            $authenticatedRequest,
+            static fn (): array => $handler()
+        )
+    );
 };
 
 return [

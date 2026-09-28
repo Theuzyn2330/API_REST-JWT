@@ -2,7 +2,7 @@
 
 namespace App\Middleware;
 
-class RoleMiddleware implements MiddlewareInterface
+final class RoleMiddleware implements MiddlewareInterface
 {
     private array $requiredRoles;
 
@@ -13,12 +13,16 @@ class RoleMiddleware implements MiddlewareInterface
 
     public function handle(object $request, callable $next): mixed
     {
-        // TODO: verificar as permissões/roles do usuário autenticado.
-        // Exemplo:
-        // $user = $request->user ?? null;
-        // if (!$user || !array_intersect($this->requiredRoles, $user->roles ?? [])) {
-        //     throw new \Exception('Acesso negado.');
-        // }
+        if ($this->requiredRoles === []) {
+            return $next($request);
+        }
+
+        $claims = $request->user ?? null;
+        $role = is_array($claims) ? ($claims['role'] ?? null) : null;
+        if (!is_string($role) || !in_array($role, $this->requiredRoles, true)) {
+            http_response_code(403);
+            return ['error' => 'Insufficient permissions.'];
+        }
 
         return $next($request);
     }
