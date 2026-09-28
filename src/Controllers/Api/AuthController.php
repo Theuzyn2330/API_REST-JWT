@@ -101,6 +101,7 @@ class AuthController
 		try {
 			$user = $authService->login($credentials);
 		} catch (\Throwable $exception) {
+			error_log(sprintf('Authentication lookup failed (%s): %s', get_class($exception), $exception->getMessage()));
 			http_response_code(500);
 			return ['error' => 'Unable to authenticate user.'];
 		}
@@ -115,6 +116,7 @@ class AuthController
 			$role = isset($user['role']) && is_string($user['role']) ? $user['role'] : null;
 			$token = $jwtService->generate((int) $user['id'], $role);
 		} catch (\Throwable $exception) {
+			error_log(sprintf('JWT issuance failed (%s): %s', get_class($exception), $exception->getMessage()));
 			http_response_code(500);
 			return ['error' => 'Unable to issue access token.'];
 		}
