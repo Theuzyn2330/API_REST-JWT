@@ -1,0 +1,409 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+:root {
+    color-scheme: light;
+    --ink: #17251f;
+    --forest: #18372d;
+    --forest-deep: #122a22;
+    --leaf: #c9ef78;
+    --coral: #e98568;
+    --paper: #f5f7f3;
+    --line: #dbe2da;
+    --muted: #748078;
+    --mono: 'DM Mono', 'Courier New', monospace;
+    --sans: 'Manrope', 'Segoe UI', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 14px;
+}
+
+.login-page {
+    min-height: 100vh;
+    background: var(--paper);
+}
+
+.login-layout {
+    display: grid;
+    grid-template-columns: minmax(330px, 0.92fr) minmax(440px, 1.08fr);
+    min-height: 100vh;
+}
+
+.login-context {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100vh;
+    padding: 38px clamp(30px, 5vw, 76px) 30px;
+    overflow: hidden;
+    color: #f4f7ef;
+    background-color: var(--forest-deep);
+    background-image: linear-gradient(rgba(222, 246, 216, 0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(222, 246, 216, 0.045) 1px, transparent 1px);
+    background-size: 42px 42px;
+}
+
+.login-context::after {
+    position: absolute;
+    right: -70px;
+    bottom: 80px;
+    width: 260px;
+    height: 1px;
+    content: '';
+    background: var(--coral);
+    transform: rotate(-42deg);
+    opacity: 0.8;
+}
+
+.brand-lockup {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    width: fit-content;
+    color: inherit;
+    font-size: 18px;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.brand-mark {
+    display: flex;
+    align-items: end;
+    gap: 3px;
+    width: 24px;
+    height: 22px;
+    padding: 3px;
+    border: 1px solid rgba(201, 239, 120, 0.5);
+}
+
+.brand-mark i {
+    display: block;
+    width: 4px;
+    height: 45%;
+    background: var(--leaf);
+}
+
+.brand-mark i:nth-child(2) {
+    height: 72%;
+}
+
+.brand-mark i:nth-child(3) {
+    height: 100%;
+}
+
+.brand-period {
+    color: var(--leaf);
+}
+
+.context-content {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 400px);
+    margin: auto 0;
+    padding: 80px 0;
+}
+
+.eyebrow,
+.login-topline,
+.context-foot,
+.graphic-heading,
+.graphic-footer,
+.login-footer {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+}
+
+.eyebrow {
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+    color: #8da097;
+}
+
+.eyebrow span {
+    color: #63796e;
+}
+
+.context-content h1 {
+    margin: 27px 0 6px;
+    font-size: clamp(50px, 6vw, 78px);
+    font-weight: 700;
+    line-height: 0.99;
+}
+
+.context-caption {
+    margin: 16px 0 0;
+    color: #b3c3b9;
+    font-size: 16px;
+}
+
+.market-graphic {
+    margin-top: 64px;
+    padding: 15px 0 0;
+    border-top: 1px solid rgba(214, 231, 215, 0.2);
+}
+
+.graphic-heading,
+.graphic-footer {
+    display: flex;
+    justify-content: space-between;
+    color: #8da097;
+}
+
+.graphic-heading span:last-child {
+    color: var(--leaf);
+}
+
+.graphic-grid {
+    display: flex;
+    align-items: end;
+    gap: 8px;
+    height: 90px;
+    margin: 12px 0 11px;
+    border-bottom: 1px solid rgba(214, 231, 215, 0.28);
+    background: repeating-linear-gradient(to bottom, transparent 0, transparent 29px, rgba(214, 231, 215, 0.09) 30px);
+}
+
+.graphic-grid span {
+    flex: 1;
+    height: var(--bar-height);
+    background: #70977b;
+    animation: bar-rise 700ms ease-out both;
+}
+
+.graphic-grid span:nth-child(2n) {
+    background: var(--leaf);
+}
+
+.graphic-grid span:nth-child(2) { animation-delay: 50ms; }
+.graphic-grid span:nth-child(3) { animation-delay: 100ms; }
+.graphic-grid span:nth-child(4) { animation-delay: 150ms; }
+.graphic-grid span:nth-child(5) { animation-delay: 200ms; }
+.graphic-grid span:nth-child(6) { animation-delay: 250ms; }
+.graphic-grid span:nth-child(7) { animation-delay: 300ms; }
+.graphic-grid span:nth-child(8) { animation-delay: 350ms; }
+
+.context-foot {
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+    color: #8da097;
+}
+
+.context-foot span {
+    color: #d0dbd2;
+}
+
+.login-main {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100vh;
+    padding: 40px clamp(30px, 7vw, 108px) 30px;
+}
+
+.login-topline {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #859087;
+}
+
+.status-indicator {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #82a95d;
+}
+
+.topline-rule {
+    width: 30px;
+    height: 1px;
+    background: #c4cdc4;
+}
+
+.login-form-wrap {
+    width: min(100%, 390px);
+    margin: 48px auto;
+    animation: reveal 450ms ease-out both;
+}
+
+.form-eyebrow {
+    justify-content: flex-start;
+    color: #748078;
+}
+
+.login-form-wrap h2 {
+    margin: 19px 0 8px;
+    font-size: clamp(27px, 3vw, 34px);
+    font-weight: 700;
+    letter-spacing: 0;
+}
+
+.form-intro {
+    margin: 0;
+    color: #68756d;
+    font-size: 14px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 36px;
+}
+
+.login-form label {
+    margin-bottom: 9px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.login-form input {
+    width: 100%;
+    height: 48px;
+    margin-bottom: 22px;
+    padding: 0 14px;
+    border: 1px solid #cbd5cc;
+    border-radius: 3px;
+    outline: 0;
+    color: var(--ink);
+    background: #fff;
+    font: inherit;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.login-form input::placeholder {
+    color: #9aa59c;
+}
+
+.login-form input:focus {
+    border-color: #557e5d;
+    box-shadow: 0 0 0 3px rgba(91, 131, 82, 0.14);
+}
+
+.password-label-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.password-label-row label {
+    margin-bottom: 9px;
+}
+
+.login-form button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 49px;
+    margin-top: 6px;
+    padding: 0 17px;
+    border: 0;
+    border-radius: 3px;
+    color: #14271e;
+    background: var(--leaf);
+    font: 700 13px var(--sans);
+    cursor: pointer;
+    transition: background 150ms ease, transform 150ms ease;
+}
+
+.login-form button:hover {
+    background: #d7f69b;
+    transform: translateY(-1px);
+}
+
+.login-form button span {
+    font-size: 19px;
+}
+
+.login-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 21px;
+    color: #748078;
+    font-size: 11px;
+}
+
+.login-note span {
+    color: var(--coral);
+    font-size: 8px;
+}
+
+.login-footer {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    color: #8a958d;
+}
+
+@keyframes bar-rise {
+    from { transform: scaleY(0.12); transform-origin: bottom; }
+    to { transform: scaleY(1); transform-origin: bottom; }
+}
+
+@keyframes reveal {
+    from { opacity: 0; transform: translateY(9px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 760px) {
+    .login-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .login-context {
+        min-height: 225px;
+        padding: 22px 25px 19px;
+    }
+
+    .context-content {
+        padding: 34px 0 16px;
+    }
+
+    .context-content h1 {
+        margin-top: 14px;
+        font-size: 38px;
+    }
+
+    .context-caption,
+    .market-graphic,
+    .context-foot {
+        display: none;
+    }
+
+    .login-context::after {
+        right: -80px;
+        bottom: 20px;
+    }
+
+    .login-main {
+        min-height: calc(100vh - 225px);
+        padding: 23px 25px 19px;
+    }
+
+    .login-form-wrap {
+        margin: 54px auto;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+}
