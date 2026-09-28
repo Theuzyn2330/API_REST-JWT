@@ -3,6 +3,7 @@
 namespace App\Controllers\Api;
 
 use App\Models\User;
+use App\Services\AuthService;
 use RuntimeException;
 
 class AuthController
@@ -13,13 +14,10 @@ class AuthController
 
 	public function register(?array $payload = null): array
 	{
+		$payload = $this->readPayload($payload);
 		if ($payload === null) {
-			$requestBody = file_get_contents('php://input');
-			$payload = is_string($requestBody) ? json_decode($requestBody, true) : null;
-			if (!is_array($payload) || json_last_error() !== JSON_ERROR_NONE) {
-				http_response_code(400);
-				return ['error' => 'Request body must be valid JSON.'];
-			}
+			http_response_code(400);
+			return ['error' => 'Request body must be valid JSON.'];
 		}
 
 		$name = $payload['name'] ?? null;
@@ -75,5 +73,60 @@ class AuthController
 				'email' => $email,
 			],
 		];
+	}
+
+	public function login(?array $payload = null): array
+	{
+		$payload = $this->readPayload($payload);
+		if ($payload === null) {
+			http_response_code(400);
+			return ['error' => 'Request body must be valid JSON.'];
+		}
+
+		$email = $payload['email'] ?? null;
+		$password = $payload['password'] ?? null;
+		if (!is_string($email) || !is_string($password)) {
+			http_response_code(422);
+			return ['error' => 'Email and password are required.'];
+		}
+
+		$credentials = ['email' => strtolower(trim($email)), 'password' => $password];
+		$authService = new AuthService($this->users);
+		if (!$authService->validateCredentials($credentials)) {
+			http_response_code(422);
+			return ['error' => 'Login data is invalid.'];
+		}
+
+		try {
+			$user = $authService->login($credentials);
+		} catch (\Throwable $exception) {
+			http_response_code(500);
+			return ['error' => 'Unable to authenticate user.'];
+		}
+
+		if ($user === null) {
+			http_response_code(401);
+			return ['error' => 'Invalid email or password.'];
+		}
+
+		http_response_code(200);
+		return [
+			'message' => 'Login successful.',
+			'user' => $user,
+		];
+	}
+
+	private function readPayload(?array $payload): ?array
+	{
+		if ($payload !== null) {
+			return $payload;
+		}
+
+		$requestBody = file_get_contents('php://input');
+		$decodedPayload = is_string($requestBody) ? json_decode($requestBody, true) : null;
+
+		return is_array($decodedPayload) && json_last_error() === JSON_ERROR_NONE
+			? $decodedPayload
+			: null;
 	}
 }
