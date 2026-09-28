@@ -8,16 +8,13 @@ $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 $path = is_string($uri) && $uri !== '' ? '/' . trim($uri, '/') : '/';
 $path = $path === '' ? '/' : $path;
 $method = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
-
-$routes = [
-	'GET /api/health' => ['status' => 'online'],
-];
+$routes = require __DIR__ . '/../src/Routes/api.php';
 
 $routeKey = $method . ' ' . $path;
-$statusCode = 200;
-$response = $routes[$routeKey] ?? null;
+$routeHandler = $routes[$routeKey] ?? null;
 
-if ($response === null) {
+$response = null;
+if ($routeHandler === null) {
 	$statusCode = 404;
 	$response = ['error' => 'Not Found'];
 
@@ -31,7 +28,13 @@ if ($response === null) {
 			break;
 		}
 	}
+
+	http_response_code($statusCode);
+} elseif (is_callable($routeHandler)) {
+	$response = $routeHandler();
+} else {
+	$response = $routeHandler;
+	http_response_code(200);
 }
 
-http_response_code($statusCode);
 echo json_encode($response, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
