@@ -41,21 +41,33 @@ final class MarketService
                 continue;
             }
 
+            usort($groupRecords, static fn (array $left, array $right): int => strcmp($left['collected_at'], $right['collected_at']));
             $prices = array_map(static fn (array $record): float => (float) $record['price'], $groupRecords);
             $collectedDates = array_column($groupRecords, 'collected_at');
             sort($collectedDates, SORT_STRING);
             $count = count($prices);
+            $currentPrice = $prices[$count - 1];
+            $previousPrice = $count > 1 ? $prices[$count - 2] : null;
+            $variation = $previousPrice === null ? null : round($currentPrice - $previousPrice, 4);
             $accepted += $count;
             $statistics[] = [
                 'product_id' => $group['product_id'],
+                'product_name' => $group['product_name'],
                 'unit' => $group['unit'],
                 'location' => $group['location'],
                 'count' => $count,
                 'average' => round(array_sum($prices) / $count, 4),
                 'minimum' => min($prices),
                 'maximum' => max($prices),
+                'current_price' => $currentPrice,
+                'variation' => $variation,
+                'variation_percent' => $previousPrice === null || $previousPrice == 0.0
+                    ? null
+                    : round(($variation / $previousPrice) * 100, 2),
+                'source_count' => count(array_unique(array_column($groupRecords, 'source_id'))),
                 'collected_from' => $collectedDates[0],
                 'collected_to' => $collectedDates[$count - 1],
+                'last_updated' => $collectedDates[$count - 1],
             ];
         }
 

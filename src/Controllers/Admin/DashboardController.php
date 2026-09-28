@@ -3,6 +3,8 @@
 namespace App\Controllers\Admin;
 
 use App\Database\Connection;
+use App\Models\Price;
+use App\Services\MarketService;
 use PDO;
 use PDOStatement;
 use RuntimeException;
@@ -17,7 +19,7 @@ final class DashboardController
 		'sources' => 'sources',
 	];
 
-	public function __construct(private ?PDO $connection = null)
+	public function __construct(private ?PDO $connection = null, private ?Price $priceRecords = null)
 	{
 	}
 
@@ -45,5 +47,12 @@ final class DashboardController
 		}
 
 		return $statistics;
+	}
+
+	public function monitoring(): array
+	{
+		$records = ($this->priceRecords ?? new Price())->findAll(null, null, 100);
+
+		return (new MarketService())->calculate($records);
 	}
 }

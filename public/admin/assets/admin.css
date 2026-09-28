@@ -707,6 +707,74 @@ body {
     text-align: right;
 }
 
+.market-monitor {
+    margin-top: 37px;
+}
+
+.monitor-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 13px;
+    border-bottom: 1px solid #d5ded5;
+}
+
+.monitor-heading h2 {
+    margin: 8px 0 0;
+    font-size: 17px;
+    letter-spacing: 0;
+}
+
+.monitor-unit-note {
+    padding-bottom: 2px;
+    color: #829087;
+    font-size: 10px;
+}
+
+.monitor-empty {
+    margin: 0;
+    padding: 18px 0;
+    color: #7b887f;
+    font-size: 12px;
+}
+
+.monitor-table td {
+    white-space: nowrap;
+}
+
+.monitor-table td:first-child strong {
+    color: #516c54;
+    font-family: var(--mono);
+    font-size: 10px;
+}
+
+.monitor-table td code {
+    color: #829087;
+    font: 9px var(--mono);
+}
+
+.variation-cell {
+    color: #68776c;
+    font-family: var(--mono);
+    font-size: 10px;
+}
+
+.variation-cell small {
+    display: block;
+    margin-top: 3px;
+    color: #829087;
+    font-size: 8px;
+}
+
+.variation-cell.is-up {
+    color: #a0523c;
+}
+
+.variation-cell.is-down {
+    color: #3d7451;
+}
+
 .category-workspace {
     display: grid;
     grid-template-columns: minmax(230px, 0.72fr) minmax(0, 1.6fr);

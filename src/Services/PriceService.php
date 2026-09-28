@@ -78,6 +78,7 @@ final class PriceService
             $groupKey = json_encode([$productId, $normalizedUnit, $location], JSON_UNESCAPED_UNICODE);
             $groups[$groupKey] ??= [
                 'product_id' => $productId,
+                'product_name' => is_string($record['product_name'] ?? null) ? $record['product_name'] : null,
                 'unit' => $normalizedUnit,
                 'location' => $location,
                 'records' => [],
