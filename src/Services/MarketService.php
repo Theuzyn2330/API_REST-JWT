@@ -4,14 +4,19 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Models\MarketIndex;
+use App\Models\Price;
 use DateTimeImmutable;
 use DateTimeZone;
 use InvalidArgumentException;
 
 final class MarketService
 {
-    public function __construct(private ?PriceService $priceService = null)
-    {
+    public function __construct(
+        private ?PriceService $priceService = null,
+        private ?Price $prices = null,
+        private ?MarketIndex $indices = null
+    ) {
     }
 
     public function calculate(array $records, ?string $from = null, ?string $to = null): array
@@ -76,6 +81,49 @@ final class MarketService
             'market' => null,
             'message' => 'Market lookup not implemented yet.',
         ];
+    }
+
+    public function calculateAndStore(int $productId, ?string $from = null, ?string $to = null): array
+    {
+        if ($productId < 1) {
+            throw new InvalidArgumentException('Product ID must be a positive integer.');
+        }
+
+        $rawRecords = ($this->prices ?? new Price())->findAll($productId, null, 100);
+        $result = $this->calculate($rawRecords, $from, $to);
+        $calculatedAt = gmdate('Y-m-d H:i:s');
+        $saved = [];
+        $indexRepository = $this->indices ?? new MarketIndex();
+
+        foreach ($result['statistics'] as $statistics) {
+            $snapshot = [
+                'product_id' => $productId,
+                'unit' => $statistics['unit'],
+                'location' => $statistics['location'],
+                'average_price' => number_format($statistics['average'], 4, '.', ''),
+                'minimum_price' => number_format($statistics['minimum'], 4, '.', ''),
+                'maximum_price' => number_format($statistics['maximum'], 4, '.', ''),
+                'record_count' => $statistics['count'],
+                'calculated_at' => $calculatedAt,
+            ];
+            $snapshot['id'] = $indexRepository->create($snapshot);
+            $saved[] = $snapshot;
+        }
+
+        return [
+            'data' => $saved,
+            'accepted' => $result['accepted'],
+            'rejected' => $result['rejected'],
+        ];
+    }
+
+    public function getProductHistory(int $productId, ?string $location = null, int $limit = 100): array
+    {
+        if ($productId < 1) {
+            throw new InvalidArgumentException('Product ID must be a positive integer.');
+        }
+
+        return ($this->indices ?? new MarketIndex())->findHistory($productId, $location, $limit);
     }
 
     private function normalizeDateBoundary(?string $date, string $name): ?string

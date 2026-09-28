@@ -2,6 +2,7 @@
 
 use App\Controllers\Api\AuthController;
 use App\Controllers\Api\CategoryController;
+use App\Controllers\Api\MarketController;
 use App\Controllers\Api\ProductController;
 use App\Controllers\Api\PriceController;
 use App\Controllers\Api\SourceController;
@@ -40,4 +41,6 @@ return [
     ['GET', '/api/prices', static fn (array $vars, object $request): array => (new PriceController())->index()],
     ['GET', '/api/prices/{id:\\d+}', static fn (array $vars, object $request): array => (new PriceController())->show($vars['id'])],
     ['POST', '/api/prices', static fn (array $vars, object $request): array => $authenticated($request, static fn (): array => (new PriceController())->create())],
+    ['GET', '/api/products/{id:\\d+}/history', static fn (array $vars, object $request): array => (new MarketController())->productHistory($vars['id'])],
+    ['POST', '/api/products/{id:\\d+}/history', static fn (array $vars, object $request): array => $authenticated($request, static fn (): array => (new MarketController())->calculateProductHistory($vars['id']))],
 ];
