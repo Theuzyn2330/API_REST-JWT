@@ -3,6 +3,7 @@
 use App\Controllers\Api\AuthController;
 use App\Controllers\Api\CategoryController;
 use App\Controllers\Api\ProductController;
+use App\Controllers\Api\PriceController;
 use App\Controllers\Api\SourceController;
 use App\Controllers\Api\UserController;
 use App\Middleware\JwtMiddleware;
@@ -36,4 +37,7 @@ return [
     ['POST', '/api/sources', static fn (array $vars, object $request): array => $authenticated($request, static fn (): array => (new SourceController())->create())],
     ['PUT', '/api/sources/{id:\\d+}', static fn (array $vars, object $request): array => $authenticated($request, static fn (): array => (new SourceController())->update($vars['id']))],
     ['DELETE', '/api/sources/{id:\\d+}', static fn (array $vars, object $request): array => $authenticated($request, static fn (): array => (new SourceController())->deactivate($vars['id']))],
+    ['GET', '/api/prices', static fn (array $vars, object $request): array => (new PriceController())->index()],
+    ['GET', '/api/prices/{id:\\d+}', static fn (array $vars, object $request): array => (new PriceController())->show($vars['id'])],
+    ['POST', '/api/prices', static fn (array $vars, object $request): array => $authenticated($request, static fn (): array => (new PriceController())->create())],
 ];
