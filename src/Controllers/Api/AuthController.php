@@ -4,6 +4,7 @@ namespace App\Controllers\Api;
 
 use App\Models\User;
 use App\Services\AuthService;
+use App\Services\JwtService;
 use RuntimeException;
 
 class AuthController
@@ -109,10 +110,22 @@ class AuthController
 			return ['error' => 'Invalid email or password.'];
 		}
 
+		try {
+			$jwtService = new JwtService();
+			$role = isset($user['role']) && is_string($user['role']) ? $user['role'] : null;
+			$token = $jwtService->generate((int) $user['id'], $role);
+		} catch (\Throwable $exception) {
+			http_response_code(500);
+			return ['error' => 'Unable to issue access token.'];
+		}
+
 		http_response_code(200);
 		return [
 			'message' => 'Login successful.',
 			'user' => $user,
+			'token_type' => 'Bearer',
+			'access_token' => $token,
+			'expires_in' => $jwtService->getExpirationSeconds(),
 		];
 	}
 
