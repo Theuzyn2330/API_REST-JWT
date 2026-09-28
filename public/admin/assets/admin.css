@@ -606,6 +606,107 @@ body {
     line-height: 1.7;
 }
 
+.dashboard-status {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    min-height: 54px;
+    margin: 24px 0 18px;
+    padding: 0 15px;
+    border: 1px solid #dbe3d9;
+    background: #fff;
+}
+
+.dashboard-status > div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #718077;
+    font-family: var(--mono);
+    font-size: 9px;
+}
+
+.dashboard-status strong {
+    color: var(--forest);
+    font-weight: 500;
+}
+
+.dashboard-status .is-offline {
+    background: var(--coral);
+}
+
+.dashboard-updated {
+    margin-left: auto;
+    color: #8a958d;
+    font-family: var(--mono);
+    font-size: 9px;
+}
+
+.dashboard-alert {
+    margin: 0 0 18px;
+    color: #823e2d;
+    font-size: 12px;
+}
+
+.dashboard-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid #d5ded5;
+    border-left: 1px solid #d5ded5;
+}
+
+.metric-item {
+    display: flex;
+    flex-direction: column;
+    min-height: 176px;
+    padding: 17px 19px 16px;
+    border-right: 1px solid #d5ded5;
+    border-bottom: 1px solid #d5ded5;
+    background: rgba(255, 255, 255, 0.76);
+}
+
+.metric-topline,
+.metric-bottomline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.metric-topline {
+    color: #819087;
+    font-family: var(--mono);
+    font-size: 9px;
+}
+
+.metric-topline span:last-child {
+    color: #6d8a54;
+}
+
+.metric-item h2 {
+    margin: 27px 0 15px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0;
+}
+
+.metric-bottomline {
+    margin-top: auto;
+}
+
+.metric-value {
+    color: var(--forest);
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.metric-bottomline span {
+    color: #869189;
+    font-size: 10px;
+    text-align: right;
+}
+
 .admin-footer {
     display: flex;
     justify-content: space-between;
@@ -700,6 +801,38 @@ body {
 
     .dashboard-empty {
         margin: 56px auto;
+    }
+
+    .dashboard-status {
+        flex-wrap: wrap;
+        gap: 11px 17px;
+        padding: 11px 12px;
+    }
+
+    .dashboard-updated {
+        width: 100%;
+        margin-left: 14px;
+    }
+
+    .dashboard-metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .metric-item {
+        min-height: 157px;
+        padding: 14px 12px;
+    }
+
+    .metric-item h2 {
+        font-size: 12px;
+    }
+
+    .metric-value {
+        font-size: 25px;
+    }
+
+    .metric-bottomline span {
+        max-width: 78px;
     }
 
     .login-layout {
