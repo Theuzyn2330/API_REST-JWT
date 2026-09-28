@@ -44,9 +44,9 @@ final class CategoryController
         return ['data' => $category];
     }
 
-    public function create(): array
+    public function create(?array $payload = null): array
     {
-        $payload = $this->readPayload();
+        $payload = $this->readPayload($payload);
         if ($payload === null) {
             http_response_code(400);
             return ['error' => 'Request body must be valid JSON.'];
@@ -77,14 +77,14 @@ final class CategoryController
         return ['data' => ['id' => $id] + $category];
     }
 
-    public function update(string $id): array
+    public function update(string $id, ?array $payload = null): array
     {
         if (ctype_digit($id) !== true || (int) $id < 1) {
             http_response_code(400);
             return ['error' => 'Category ID is invalid.'];
         }
 
-        $payload = $this->readPayload();
+        $payload = $this->readPayload($payload);
         if ($payload === null) {
             http_response_code(400);
             return ['error' => 'Request body must be valid JSON.'];
@@ -151,8 +151,12 @@ final class CategoryController
         return ['message' => 'Category deleted successfully.'];
     }
 
-    private function readPayload(): ?array
+    private function readPayload(?array $payload): ?array
     {
+        if ($payload !== null) {
+            return $payload;
+        }
+
         $body = file_get_contents('php://input');
         $payload = is_string($body) ? json_decode($body, true) : null;
 
