@@ -9,7 +9,9 @@ $path = is_string($uri) && $uri !== '' ? '/' . trim($uri, '/') : '/';
 $path = $path === '' ? '/' : $path;
 $method = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
 
-$routes = [];
+$routes = [
+	'GET /api/health' => ['status' => 'online'],
+];
 
 $routeKey = $method . ' ' . $path;
 $statusCode = 200;
