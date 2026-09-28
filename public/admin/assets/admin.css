@@ -745,6 +745,7 @@ body {
 }
 
 .category-form input,
+.category-form select,
 .category-form textarea {
     width: 100%;
     min-height: 42px;
@@ -764,6 +765,7 @@ body {
 }
 
 .category-form input:focus,
+.category-form select:focus,
 .category-form textarea:focus {
     border-color: #557e5d;
     box-shadow: 0 0 0 3px rgba(91, 131, 82, 0.14);

@@ -3,6 +3,7 @@
 use App\Controllers\Api\AuthController;
 use App\Controllers\Api\CategoryController;
 use App\Controllers\Api\ProductController;
+use App\Controllers\Api\SourceController;
 use App\Controllers\Api\UserController;
 use App\Middleware\JwtMiddleware;
 
@@ -30,4 +31,9 @@ return [
     ['POST', '/api/products', static fn (array $vars, object $request): array => $authenticated($request, static fn (): array => (new ProductController())->create())],
     ['PUT', '/api/products/{id:\\d+}', static fn (array $vars, object $request): array => $authenticated($request, static fn (): array => (new ProductController())->update($vars['id']))],
     ['DELETE', '/api/products/{id:\\d+}', static fn (array $vars, object $request): array => $authenticated($request, static fn (): array => (new ProductController())->delete($vars['id']))],
+    ['GET', '/api/sources', static fn (array $vars, object $request): array => (new SourceController())->index()],
+    ['GET', '/api/sources/{id:\\d+}', static fn (array $vars, object $request): array => (new SourceController())->show($vars['id'])],
+    ['POST', '/api/sources', static fn (array $vars, object $request): array => $authenticated($request, static fn (): array => (new SourceController())->create())],
+    ['PUT', '/api/sources/{id:\\d+}', static fn (array $vars, object $request): array => $authenticated($request, static fn (): array => (new SourceController())->update($vars['id']))],
+    ['DELETE', '/api/sources/{id:\\d+}', static fn (array $vars, object $request): array => $authenticated($request, static fn (): array => (new SourceController())->deactivate($vars['id']))],
 ];
