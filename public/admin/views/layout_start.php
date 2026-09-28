@@ -50,7 +50,14 @@ $navigation = [
         <div class="admin-workspace">
             <header class="admin-topbar">
                 <div class="topbar-crumb">ECONOMY API <span>/</span> ADMINISTRAÇÃO</div>
-                <div class="topbar-user"><span class="topbar-avatar">A</span><span>Administrador</span></div>
+                <div class="topbar-user">
+                    <span class="topbar-avatar">A</span>
+                    <span><?= htmlspecialchars($_SESSION['user']['name'] ?? 'Administrador', ENT_QUOTES, 'UTF-8') ?></span>
+                    <form class="logout-form" action="/admin/logout.php" method="post">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(adminCsrfToken(), ENT_QUOTES, 'UTF-8') ?>">
+                        <button class="logout-button" type="submit" aria-label="Sair da conta" title="Sair">Sair</button>
+                    </form>
+                </div>
             </header>
             <main class="admin-content">
                 <div class="admin-page-heading">

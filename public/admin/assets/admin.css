@@ -339,6 +339,16 @@ body {
     font-size: 8px;
 }
 
+.login-error {
+    margin: 22px 0 -13px;
+    padding: 11px 12px;
+    border-left: 3px solid var(--coral);
+    color: #823e2d;
+    background: #fff0eb;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
 .login-footer {
     display: flex;
     justify-content: space-between;
@@ -501,6 +511,26 @@ body {
     font-weight: 800;
 }
 
+.logout-form {
+    margin: 0 0 0 8px;
+}
+
+.logout-button {
+    min-height: 30px;
+    padding: 0 10px;
+    border: 1px solid #d5ded5;
+    border-radius: 3px;
+    color: #536158;
+    background: #fff;
+    font: 500 10px var(--mono);
+    cursor: pointer;
+}
+
+.logout-button:hover {
+    border-color: #81917f;
+    color: var(--forest);
+}
+
 .admin-content {
     flex: 1;
     width: min(100%, 1320px);
@@ -644,6 +674,15 @@ body {
 
     .topbar-user {
         font-size: 9px;
+    }
+
+    .logout-form {
+        margin-left: 2px;
+    }
+
+    .logout-button {
+        min-height: 28px;
+        padding: 0 7px;
     }
 
     .admin-content {

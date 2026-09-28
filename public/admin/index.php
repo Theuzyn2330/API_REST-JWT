@@ -1,3 +1,52 @@
+<?php
+
+require __DIR__ . '/bootstrap.php';
+
+$loginError = null;
+$email = '';
+if (isset($_SESSION['access_token'])) {
+    header('Location: /admin/dashboard.php');
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = is_string($_POST['email'] ?? null) ? trim($_POST['email']) : '';
+    $password = is_string($_POST['password'] ?? null) ? $_POST['password'] : '';
+    $submittedToken = is_string($_POST['csrf_token'] ?? null) ? $_POST['csrf_token'] : '';
+
+    if (!hash_equals(adminCsrfToken(), $submittedToken)) {
+        http_response_code(400);
+        $loginError = 'A sessão expirou. Atualize a página e tente novamente.';
+    } elseif (filter_var($email, FILTER_VALIDATE_EMAIL) === false || $password === '') {
+        http_response_code(422);
+        $loginError = 'Informe um e-mail e uma senha válidos.';
+    } else {
+        $apiResponse = adminApiRequest('/api/auth/login', 'POST', [
+            'email' => $email,
+            'password' => $password,
+        ]);
+        $data = $apiResponse['data'];
+        if ($apiResponse['status'] === 200 && is_string($data['access_token'] ?? null)) {
+            session_regenerate_id(true);
+            $_SESSION['access_token'] = $data['access_token'];
+            $_SESSION['token_expires_at'] = time() + max(1, (int) ($data['expires_in'] ?? 3600));
+            $user = is_array($data['user'] ?? null) ? $data['user'] : [];
+            $_SESSION['user'] = [
+                'id' => (int) ($user['id'] ?? 0),
+                'name' => is_string($user['name'] ?? null) ? $user['name'] : $email,
+                'email' => is_string($user['email'] ?? null) ? $user['email'] : $email,
+            ];
+            header('Location: /admin/dashboard.php');
+            exit;
+        }
+
+        $loginError = in_array($apiResponse['status'], [401, 422], true)
+            ? 'E-mail ou senha inválidos.'
+            : 'Não foi possível autenticar agora. Tente novamente mais tarde.';
+        http_response_code($apiResponse['status'] === 401 ? 401 : 503);
+    }
+}
+?>
 <!doctype html>
 <html lang="pt-BR">
 <head>
@@ -49,9 +98,14 @@
                 <h2 id="login-title">Acesse sua conta</h2>
                 <p class="form-intro">Entre com suas credenciais administrativas.</p>
 
+                <?php if ($loginError !== null): ?>
+                    <p class="login-error" role="alert"><?= htmlspecialchars($loginError, ENT_QUOTES, 'UTF-8') ?></p>
+                <?php endif; ?>
+
                 <form class="login-form" action="/admin/" method="post">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(adminCsrfToken(), ENT_QUOTES, 'UTF-8') ?>">
                     <label for="email">E-mail</label>
-                    <input id="email" name="email" type="email" autocomplete="username" placeholder="nome@empresa.com" required>
+                    <input id="email" name="email" type="email" autocomplete="username" placeholder="nome@empresa.com" value="<?= htmlspecialchars($email, ENT_QUOTES, 'UTF-8') ?>" required>
 
                     <div class="password-label-row">
                         <label for="password">Senha</label>

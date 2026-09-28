@@ -1,5 +1,15 @@
 <?php
 
+require __DIR__ . '/bootstrap.php';
+adminRequireAuthentication();
+
+$profileResponse = adminApiRequest('/api/profile', 'GET', null, $_SESSION['access_token']);
+if ($profileResponse['status'] === 401) {
+    adminDestroySession();
+    header('Location: /admin/');
+    exit;
+}
+
 $pageTitle = 'Painel';
 $activePage = 'dashboard';
 require __DIR__ . '/views/layout_start.php';
