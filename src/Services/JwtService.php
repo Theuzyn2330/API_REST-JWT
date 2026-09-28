@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use InvalidArgumentException;
 
 final class JwtService
@@ -42,5 +43,25 @@ final class JwtService
         }
 
         return JWT::encode($payload, $this->secretKey, 'HS256');
+    }
+
+    public function validate(string $token): array
+    {
+        try {
+            $claims = (array) JWT::decode($token, new Key($this->secretKey, 'HS256'));
+        } catch (\Throwable $exception) {
+            throw new InvalidArgumentException('Invalid or expired access token.', 0, $exception);
+        }
+
+        $userId = filter_var(
+            $claims['sub'] ?? null,
+            FILTER_VALIDATE_INT,
+            ['options' => ['min_range' => 1]]
+        );
+        if ($userId === false || !isset($claims['exp']) || !is_int($claims['exp'])) {
+            throw new InvalidArgumentException('Access token is missing required claims.');
+        }
+
+        return $claims;
     }
 }
