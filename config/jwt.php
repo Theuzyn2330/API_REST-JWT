@@ -7,7 +7,10 @@ if (is_file($projectRoot . DIRECTORY_SEPARATOR . '.env')) {
     Dotenv::createImmutable($projectRoot)->safeLoad();
 }
 
-$secret = $_ENV['JWT_SECRET'] ?? $_SERVER['JWT_SECRET'] ?? getenv('JWT_SECRET');
+$secret = getenv('JWT_SECRET');
+if (!is_string($secret)) {
+    $secret = $_SERVER['JWT_SECRET'] ?? $_ENV['JWT_SECRET'] ?? null;
+}
 if (
     !is_string($secret)
     || strlen($secret) < 32
@@ -16,10 +19,11 @@ if (
     throw new \RuntimeException('JWT_SECRET must be a non-placeholder value of at least 32 bytes.');
 }
 
-$expiration = filter_var(
-    $_ENV['JWT_EXPIRATION'] ?? $_SERVER['JWT_EXPIRATION'] ?? getenv('JWT_EXPIRATION'),
-    FILTER_VALIDATE_INT
-);
+$expirationValue = getenv('JWT_EXPIRATION');
+if (!is_string($expirationValue)) {
+    $expirationValue = $_SERVER['JWT_EXPIRATION'] ?? $_ENV['JWT_EXPIRATION'] ?? null;
+}
+$expiration = filter_var($expirationValue, FILTER_VALIDATE_INT);
 if ($expiration === false || $expiration < 1) {
     throw new \RuntimeException('JWT_EXPIRATION must be a positive integer.');
 }

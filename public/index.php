@@ -9,6 +9,13 @@ $path = is_string($uri) && $uri !== '' ? '/' . trim($uri, '/') : '/';
 $path = $path === '' ? '/' : $path;
 $method = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
 $routes = require __DIR__ . '/../src/Routes/api.php';
+$request = (object) [
+	'method' => $method,
+	'path' => $path,
+	'headers' => [
+		'Authorization' => $_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? '',
+	],
+];
 
 $routeKey = $method . ' ' . $path;
 $routeHandler = $routes[$routeKey] ?? null;
@@ -31,7 +38,7 @@ if ($routeHandler === null) {
 
 	http_response_code($statusCode);
 } elseif (is_callable($routeHandler)) {
-	$response = $routeHandler();
+	$response = $routeHandler($request);
 } else {
 	$response = $routeHandler;
 	http_response_code(200);

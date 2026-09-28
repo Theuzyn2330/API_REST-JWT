@@ -109,7 +109,10 @@ final class Connection
 
     private static function getEnvironmentVariable(string $name): ?string
     {
-        $value = $_ENV[$name] ?? $_SERVER[$name] ?? getenv($name);
+        $value = getenv($name);
+        if (!is_string($value)) {
+            $value = $_SERVER[$name] ?? $_ENV[$name] ?? null;
+        }
 
         return is_string($value) ? $value : null;
     }
