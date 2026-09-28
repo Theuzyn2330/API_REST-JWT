@@ -6,22 +6,18 @@ namespace App\Services;
 
 final class JwtService
 {
-    public function __construct(
-        private readonly string $secretKey = 'change_me'
-    ) {
+    private readonly string $secretKey;
+    private readonly int $expirationSeconds;
+
+    public function __construct()
+    {
+        $configuration = require dirname(__DIR__, 2) . '/config/jwt.php';
+        $this->secretKey = $configuration['secret'];
+        $this->expirationSeconds = $configuration['expiration'];
     }
 
-    public function generate(array $payload): string
+    public function getExpirationSeconds(): int
     {
-        return 'jwt.token.not.implemented';
-    }
-
-    public function validate(string $token): array
-    {
-        return [
-            'valid' => false,
-            'message' => 'JWT validation not implemented yet.',
-            'token' => $token,
-        ];
+        return $this->expirationSeconds;
     }
 }
