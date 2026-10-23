@@ -61,42 +61,116 @@ O fluxo da API começa em `public/index.php`, que carrega o ambiente, prepara os
 
 ## Configuração e execução local
 
-Na raiz do projeto:
+A seguir está o fluxo recomendado para rodar a aplicação em um ambiente local de desenvolvimento.
 
-1. Crie o arquivo `.env` a partir de `.env.example` e configure banco de dados e JWT. Use um segredo aleatório com pelo menos 32 bytes; não use o valor ilustrativo do exemplo.
+### 1) Requisitos do ambiente
 
-	```bash
-	cp .env.example .env
-	```
+Antes de iniciar, certifique-se de que o computador tenha:
 
-	No PowerShell, a cópia equivalente é:
+- PHP 8.1 ou superior
+- Extensões PHP habilitadas: `curl`, `mbstring` e `pdo_mysql`
+- Composer instalado
+- MySQL 8.0 ou compatível
+- Acesso ao cliente MySQL (pelo menos para criar o banco e executar as migrações)
 
-	```powershell
-	Copy-Item .env.example .env
-	```
+Verifique as versões:
 
-2. Instale as dependências:
+```bash
+php -v
+composer --version
+mysql --version
+```
 
-	```bash
-	composer install
-	```
+### 2) Crie o arquivo de ambiente
 
-3. Crie o banco configurado e aplique as migrações:
+Na raiz do projeto, copie o exemplo de configuração para um arquivo `.env`:
 
-	```bash
-	php bin/create_database.php
-	php bin/migrate.php
-	```
+```bash
+cp .env.example .env
+```
 
-4. Inicie o servidor de desenvolvimento com `public/` como raiz:
+No PowerShell:
 
-	```bash
-	php -S localhost:8000 -t public
-	```
+```powershell
+Copy-Item .env.example .env
+```
 
-A API estará disponível em `http://localhost:8000`, e o painel em `http://localhost:8000/admin/`. O painel usa `APP_URL` para encontrar a API; mantenha esse valor alinhado com o endereço usado localmente.
+Edite o `.env` e ajuste os valores do banco e do JWT. O mínimo necessário é:
 
-O endpoint `GET /api/health` confirma que a aplicação está respondendo, mas não verifica a conexão com o banco.
+```dotenv
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://localhost:8000
+
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=economy_api
+DB_USERNAME=seu_usuario_mysql
+DB_PASSWORD=sua_senha_mysql
+
+JWT_SECRET=um_segredo_aleatorio_com_mais_de_32_bytes
+JWT_EXPIRATION=3600
+```
+
+Dica: `JWT_SECRET` deve ser uma string aleatória e não reutilizar o valor do exemplo.
+
+### 3) Instale as dependências
+
+```bash
+composer install
+```
+
+Se o Composer pedir para atualizar o pacote de dependência ou não encontrar o PHP correto, confirme que o `php` e o `composer` do ambiente estejam no mesmo runtime.
+
+### 4) Prepare o banco MySQL
+
+Crie o banco e execute as migrações do projeto:
+
+```bash
+php bin/create_database.php
+php bin/migrate.php
+```
+
+Esses comandos criam o schema e as tabelas exigidas pela API. Caso o MySQL não esteja rodando, o processo vai falhar com erro de conexão; nesse caso, inicie o serviço do MySQL e confirme as credenciais do `.env`.
+
+### 5) Inicie a aplicação
+
+Na raiz do projeto, rode:
+
+```bash
+php -S localhost:8000 -t public
+```
+
+Esse comando faz o PHP servir a pasta `public/` como raiz da aplicação. Com isso, a API fica disponível em:
+
+- API: `http://localhost:8000`
+- Painel administrativo: `http://localhost:8000/admin/`
+
+O painel usa `APP_URL` para encontrar a API; mantenha esse valor alinhado com o endereço local que você está usando.
+
+### 6) Verifique se a aplicação está respondendo
+
+Uma checagem rápida é:
+
+```bash
+curl http://localhost:8000/api/health
+```
+
+Se a API estiver funcionando, a resposta deve vir em JSON. Esse endpoint confirma que o servidor responde, mas não garante que o banco está conectado.
+
+### 7) Fluxo rápido de uso
+
+1. Siga o [guia de uso](docs/GUIA_DE_USO.md) para criar o primeiro administrador e acessar o painel.
+2. No painel, cadastre categorias, produtos e fontes antes de registrar preços.
+3. Contas `client` podem se cadastrar e consultar a API pública, mas não têm acesso ao painel administrativo.
+4. Para chamadas de escrita, autentique-se e use uma conta `admin` ou `manager`.
+
+### Problemas comuns
+
+- `PDOException` ou erro de conexão com o banco: confirme `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME` e `DB_PASSWORD` no `.env` e verifique se o MySQL está ativo.
+- `JWT_SECRET` inválido: use um segredo aleatório com pelo menos 32 bytes e atualize o `.env`.
+- `404` em rotas da API: confirme se o servidor foi iniciado com `-t public` e se a URL está correta.
+- `admin` não consegue consumir a API: abra a configuração do painel e confirme que `APP_URL` aponta para o mesmo host e porta onde a API está rodando.
 
 ## Testes
 
@@ -110,6 +184,7 @@ Os testes estão separados em `tests/Unit/` e `tests/Integration/`.
 
 ## Documentação
 
+- [Guia de uso](docs/GUIA_DE_USO.md): instalação local, primeiro acesso, perfis, painel e exemplos PowerShell.
 - [Referência da API](docs/API.md): endpoints, autenticação, payloads, filtros e respostas de erro.
 - [Preparação para produção](docs/DEPLOYMENT.md): configuração de hospedagem, segurança, migrações e operação.
 
