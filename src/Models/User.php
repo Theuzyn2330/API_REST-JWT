@@ -48,6 +48,16 @@ class User extends AbstractModel
 		return is_array($user) ? $user : null;
 	}
 
+	public function findAll(): array
+	{
+		$statement = $this->connection->query(
+			'SELECT users.id, users.name, users.email, roles.code AS role, users.created_at, users.updated_at '
+			. 'FROM users INNER JOIN roles ON roles.id = users.role_id ORDER BY users.name ASC'
+		);
+
+		return $statement === false ? [] : $statement->fetchAll();
+	}
+
 	public function findByEmail(string $email): ?array
 	{
 		$statement = $this->connection->prepare(

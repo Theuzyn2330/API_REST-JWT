@@ -30,6 +30,8 @@ return [
             static fn (object $authenticatedRequest): array => (new UserController())->profile($authenticatedRequest)
         );
     }],
+    ['GET', '/api/users', static fn (array $vars, object $request): array => $authenticated($request, static fn (): array => (new UserController())->index(), ['admin'])],
+    ['POST', '/api/users', static fn (array $vars, object $request): array => $authenticated($request, static fn (): array => (new UserController())->create(), ['admin'])],
     ['GET', '/api/categories', static fn (array $vars, object $request): array => (new CategoryController())->index()],
     ['GET', '/api/categories/{id:\\d+}', static fn (array $vars, object $request): array => (new CategoryController())->show($vars['id'])],
     ['POST', '/api/categories', static fn (array $vars, object $request): array => $authenticated($request, static fn (): array => (new CategoryController())->create())],

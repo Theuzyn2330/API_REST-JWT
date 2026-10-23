@@ -36,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'id' => (int) ($user['id'] ?? 0),
                 'name' => is_string($user['name'] ?? null) ? $user['name'] : $email,
                 'email' => is_string($user['email'] ?? null) ? $user['email'] : $email,
+                'role' => $role,
             ];
             header('Location: /admin/dashboard.php');
             exit;

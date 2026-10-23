@@ -34,6 +34,7 @@ $navigation = [
             <div class="nav-section-label">OPERAÇÃO</div>
             <nav class="admin-navigation" aria-label="Navegação principal">
                 <?php foreach ($navigation as $key => [$label, $href]): ?>
+                    <?php if ($key === 'users' && ($_SESSION['user']['role'] ?? null) !== 'admin') continue; ?>
                     <a class="admin-nav-link<?= $activePage === $key ? ' is-active' : '' ?>" href="<?= htmlspecialchars($href, ENT_QUOTES, 'UTF-8') ?>"<?= $activePage === $key ? ' aria-current="page"' : '' ?>>
                         <span class="nav-index"><?= str_pad((string) (array_search($key, array_keys($navigation), true) + 1), 2, '0', STR_PAD_LEFT) ?></span>
                         <span><?= htmlspecialchars($label, ENT_QUOTES, 'UTF-8') ?></span>

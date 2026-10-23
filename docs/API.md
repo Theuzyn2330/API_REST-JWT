@@ -34,6 +34,8 @@ As operações de escrita de categorias, produtos, fontes, preços e recálculo 
 | POST | `/api/auth/register` | Não | Cadastra usuário. |
 | POST | `/api/auth/login` | Não | Valida credenciais e emite JWT. |
 | GET | `/api/profile` | Bearer | Retorna o perfil autenticado, sem hash da senha. |
+| GET | `/api/users` | Admin | Lista usuários sem incluir hashes de senha. |
+| POST | `/api/users` | Admin | Cria uma conta com perfil `client`. |
 
 Cadastro:
 
