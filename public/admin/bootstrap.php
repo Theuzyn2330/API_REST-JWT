@@ -63,7 +63,6 @@ function adminApiRequest(string $path, string $method = 'GET', ?array $payload =
     curl_setopt_array($handle, $options);
     $responseBody = curl_exec($handle);
     $statusCode = (int) curl_getinfo($handle, CURLINFO_RESPONSE_CODE);
-    curl_close($handle);
 
     $data = is_string($responseBody) ? json_decode($responseBody, true) : null;
 
